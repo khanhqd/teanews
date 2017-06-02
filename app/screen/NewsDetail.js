@@ -39,8 +39,9 @@ class NewsDetail extends Component {
   };
   componentWillMount() {
     this._panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (event, gestureState) => true,
-      onMoveShouldSetPanResponder: (event, gestureState) => true,
+      onMoveShouldSetResponderCapture: () => true,
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: (event, gestureState) => {},
       onPanResponderMove: (event, gestureState) => {
         switch (this.state.index0) {
@@ -85,7 +86,7 @@ class NewsDetail extends Component {
                   if (this.props.dataSlot0 >0) {
                     this.setState({index2: 2,index1: 3,index0: 1},() => {
                       if(this.props.dataSlot1>3) {
-                        this.props.dispatch(selectedPost1(this.props.dataSlot1-3))
+                        setTimeout(()=>{this.props.dispatch(selectedPost1(this.props.dataSlot1-3))},310)
                       }
                     })
                     Animated.timing(
@@ -111,7 +112,7 @@ class NewsDetail extends Component {
               } else {
                 if ((this.state.dx < -width/3)||(gestureState.vx< -1.5)) {
                   this.setState({index2: 1,index1: 2,index0: 3},() => {
-                    this.props.dispatch(selectedPost2(this.props.dataSlot2 + 3))
+                    setTimeout(()=>{this.props.dispatch(selectedPost2(this.props.dataSlot2 + 3))},310)
                   })
                   Animated.timing(
                     this.state.left0,
@@ -139,7 +140,8 @@ class NewsDetail extends Component {
                 if ((this.state.dx > width/3)||(gestureState.vx > 1.5)) {
                   this.setState({index0: 2,index2: 3,index1: 1},() => {
                     if(this.props.dataSlot2>2) {
-                      this.props.dispatch(selectedPost2(this.props.dataSlot2 - 3))
+                      setTimeout(()=>{this.props.dispatch(selectedPost2(this.props.dataSlot2 - 3))},310)
+
                     }
                   })
                   Animated.timing(
@@ -164,7 +166,8 @@ class NewsDetail extends Component {
               } else {
                 if ((this.state.dx < -width/3)||(gestureState.vx< -1.5)) {
                   this.setState({index0: 1,index2: 2,index1: 3},() => {
-                    this.props.dispatch(selectedPost0(this.props.dataSlot0 + 3))
+                    setTimeout(()=>{this.props.dispatch(selectedPost0(this.props.dataSlot0 + 3))},310)
+
                   })
                   Animated.timing(
                     this.state.left1,
@@ -192,7 +195,8 @@ class NewsDetail extends Component {
                 if ((this.state.dx > width/3)||(gestureState.vx > 1.5)) {
                   this.setState({index1: 2,index0: 3,index2: 1},() => {
                     if(this.props.dataSlot0>2) {
-                      this.props.dispatch(selectedPost0(this.props.dataSlot0 - 3))
+                      setTimeout(()=>{this.props.dispatch(selectedPost0(this.props.dataSlot0 - 3))},310)
+
                     }
                   })
                   Animated.timing(
@@ -217,7 +221,8 @@ class NewsDetail extends Component {
               } else {
                 if ((this.state.dx < -width/3)||(gestureState.vx< -1.5)) {
                   this.setState({index1: 1,index0: 2,index2: 3},() => {
-                    this.props.dispatch(selectedPost1(this.props.dataSlot1 + 3))
+                    setTimeout(()=>{this.props.dispatch(selectedPost1(this.props.dataSlot1 + 3))},310)
+
                   })
                   Animated.timing(
                     this.state.left2,

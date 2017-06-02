@@ -42,7 +42,8 @@ class NewsItem extends Component {
     bookMark: [],
     baseHTML: '',
     isSaved: false,
-    textSelected: ''
+    textSelected: '',
+    loading: false
   };
   componentWillMount() {
     this.fetchContent()
@@ -165,6 +166,7 @@ class NewsItem extends Component {
   }
 
   fetchContent() {
+    this.setState({loading:true})
     let url = this.props.row.url
     console.log(this.props.row.url)
     fetch(this.props.row.url)
@@ -181,7 +183,7 @@ class NewsItem extends Component {
   };
 
   loading() {
-    if (true) {
+    if (!this.state.loading) {
       return (
           <WebView
             ref={WEBVIEW_REF}
@@ -206,7 +208,7 @@ class NewsItem extends Component {
           <h1 class="title">${this.props.row.title}</h1>
           ${this.state.baseHTML + this.returnHtml()}
           </div>
-        `})
+        `},()=>{this.setState({loading: false})})
   }
   render() {
     return (

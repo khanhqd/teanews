@@ -259,7 +259,7 @@ class Home extends Component {
     this.props.dispatch(selectedPost0(postId))
     this.props.dispatch(selectedPost1(postId+1))
     this.props.dispatch(selectedPost2(postId-1))
-    this.props.navigation.navigate('Detail_Screen')
+    setTimeout(()=>{this.props.navigation.navigate('Detail_Screen')},300)
   }
   render() {
     return (
