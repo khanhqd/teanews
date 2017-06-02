@@ -13,7 +13,6 @@ import {
   PanResponder,
   Animated
 } from 'react-native';
-import Child from '../child';
 var {height, width} = Dimensions.get('window');
 import * as Animatable from 'react-native-animatable';
 import NewsItem from '../common/NewsItem';
@@ -24,7 +23,7 @@ import { changeModalState } from '../actions';
 import ViewPager from 'react-native-viewpager';
 import { selectedPost2, selectedPost1, selectedPost0 } from '../actions';
 
-class NewsDetail extends Child {
+class NewsDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -254,7 +253,7 @@ class NewsDetail extends Child {
         <View style={{flex:1}}>
         <View style={styles.navBar}>
             <TouchableHighlight
-            onPress={()=>this.context.appState({ scene: 'home' })}
+            onPress={()=>this.props.navigation.goBack()}
             style={styles.navBarButton}>
               <Text style={styles.navBarButtonText}>Back
               </Text>

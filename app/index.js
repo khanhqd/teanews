@@ -11,6 +11,7 @@ import Home from './screen/Home';
 import News from './screen/News';
 import NewsDetail from './screen/NewsDetail';
 
+import { StackNavigator } from 'react-navigation';
 import * as Animatable from 'react-native-animatable';
 const {width, height} = Dimensions.get("window");
 // import * as firebase from 'firebase';
@@ -24,49 +25,46 @@ const {width, height} = Dimensions.get("window");
 //   };
 // const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-export default class TeaNews extends Root {
-    state = {
-        scene: 'home',
-        webView: {
-          postBackground: 'white',
-          paddingLeft: 15,
-          fontSize: 15,
-        },
-        textSelected: '',
-        openMenuReader: true
+export const TeaNews = StackNavigator({
+  Home_Screen: {
+    screen: Home,
+  },
+  Detail_Screen: {
+    screen: NewsDetail,
+    navigationOptions: {
+      header: null,
     }
-    //
-    // componentWillMount() {
-    //     if(Platform.OS === 'android') {
-    //         BackAndroid.addEventListener('hardwareBackPress', () => {
-    //             if(typeof this.state.navbar.onPressLeft === 'undefined') return false;
-    //             if(typeof this.state.navbar.onPressLeft === 'function') {
-    //                 this.state.navbar.onPressLeft();
-    //                 return true;
-    //             }
-    //             return false;
-    //         });
-    //     }
-    // }
-
-    render() {
-        let Page;
-        const PageProps = {
-            style: {flex:1, backgroundColor: 'transparent'}
-        };
-        switch(this.state.scene) {
-            case 'home': Page = <Home {...PageProps} />; break;
-            case 'news': Page = <News {...PageProps} />; break;
-            case 'detail': Page = <NewsDetail {...PageProps} />; break;
-            default: Page = <Home {...PageProps} />;
-        }
-        return ( this.state.welcomeScreen === true ? <Welcome /> :
-        <View style={styles.container}>
-              {Page}
-        </View>
-        );
-    }
-}
+  }
+})
+// export default class TeaNews extends Root {
+//     state = {
+//         scene: 'home',
+//         webView: {
+//           postBackground: 'white',
+//           paddingLeft: 15,
+//           fontSize: 15,
+//         },
+//         textSelected: '',
+//         openMenuReader: true
+//     }
+//     render() {
+//         let Page;
+//         const PageProps = {
+//             style: {flex:1, backgroundColor: 'white'}
+//         };
+//         switch(this.state.scene) {
+//             case 'home': Page = <Home {...PageProps} />; break;
+//             case 'news': Page = <News {...PageProps} />; break;
+//             case 'detail': Page = <NewsDetail {...PageProps} />; break;
+//             default: Page = <Home {...PageProps} />;
+//         }
+//         return ( this.state.welcomeScreen === true ? <Welcome /> :
+//         <View style={styles.container}>
+//               {Page}
+//         </View>
+//         );
+//     }
+// }
 
 const styles = StyleSheet.create({
   container: {

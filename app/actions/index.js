@@ -6,7 +6,9 @@ import {
   SELECTED_POST1,
   SELECTED_POST2,
   FONTSIZE_DEC,
-  CHANGE_FONTSIZE
+  CHANGE_FONTSIZE,
+  CHANGE_BACKGROUND_COLOR,
+  CHANGE_PADDING_LEFT
 } from './types';
 
 
@@ -44,6 +46,18 @@ export const selectedPost2 = (item) => {
   return {
     type: SELECTED_POST2 ,
     payload: item
+  }
+}
+export const changeBackgroundColor = (item) => {
+  return {
+    type: CHANGE_BACKGROUND_COLOR ,
+    payload: item
+  }
+}
+export const changePaddingLeft = (item) => {
+  return {
+    type: CHANGE_PADDING_LEFT ,
+    paddingLeft: item
   }
 }
 export const fontSizeDec = (item) => {

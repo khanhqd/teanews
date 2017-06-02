@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import { View, Text, Dimensions, Platform, TouchableOpacity, Image} from 'react-native';
 var {height, width} = Dimensions.get('window');
 import NewsListItem from './NewsListItem';
-import Child from '../child';
 import { loadListData, selectedPost0, selectedPost1, selectedPost2 } from '../actions';
 import { connect } from 'react-redux';
 
-class NewsList extends Child {
+class NewsList extends Component {
   toDetail(postId) {
     this.props.dispatch(selectedPost0(postId))
     this.props.dispatch(selectedPost1(postId+1))
     this.props.dispatch(selectedPost2(postId-1))
-    this.context.appState({ scene: 'detail' })
+    this.props.navigation.navigate('Detail_Screen')
   }
   render() {
     if (this.props.data) {

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Child from '../child';
 import {
   Text,
   View,
@@ -21,7 +20,11 @@ const cheerio = require('cheerio-without-node-native');
 import { loadListData, selectedPost0, selectedPost1, selectedPost2 } from '../actions';
 import { connect } from 'react-redux';
 
-class Home extends Child {
+class Home extends Component {
+  static navigationOptions = {
+    title: 'Tea News',
+    headerTitleStyle: {alignSelf:'center'}
+  }
   constructor(props) {
     super(props);
     topView = null;
@@ -256,16 +259,12 @@ class Home extends Child {
     this.props.dispatch(selectedPost0(postId))
     this.props.dispatch(selectedPost1(postId+1))
     this.props.dispatch(selectedPost2(postId-1))
-    this.context.appState({ scene: 'detail' })
+    this.props.navigation.navigate('Detail_Screen')
   }
   render() {
     return (
       <View style={{flex:1}}>
-        <View style={styles.navBarContainer} {...this._panResponder.panHandlers}>
-            <Image
-            style={{width: 25, height: 25, marginLeft: 20}}
-            source={require('../../img/navicon_menu.png')}/>
-        </View>
+
         <View>
           <Animated.View
           ref={ (view) => topView = view }
@@ -281,6 +280,7 @@ class Home extends Child {
           style={{position: 'absolute', top: this.state.top1, zIndex: this.state.index1, backgroundColor: (this.state.index1==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
           {...this._panResponder.panHandlers}>
             <NewsList
+            navigation={this.props.navigation}
             data={this.state.data.slice(this.state.dataSlot1,this.state.dataSlot1+5)}
             dataIndex={this.state.dataSlot1}/>
           </Animated.View>
@@ -298,7 +298,11 @@ class Home extends Child {
     );
   }
 }
-
+// <View style={styles.navBarContainer} {...this._panResponder.panHandlers}>
+//     <Image
+//     style={{width: 25, height: 25, marginLeft: 20}}
+//     source={require('../../img/navicon_menu.png')}/>
+// </View>
 
 const styles = StyleSheet.create({
   navBarContainer: {

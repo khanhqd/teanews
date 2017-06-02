@@ -9,7 +9,6 @@ import { View, Text, Dimensions, Platform, TouchableOpacity, Image,
   ScrollView,
   AsyncStorage } from 'react-native';
 var {height, width} = Dimensions.get('window');
-import Child from '../child';
 
 import { RunsItem, Button1 } from '../common';
 const cheerio = require('cheerio-without-node-native');
@@ -36,7 +35,7 @@ const patchPostMessageFunction = function() {
 
 const patchPostMessageJsCode = '(' + String(patchPostMessageFunction) + ')();';
 
-class NewsItem extends Child {
+class NewsItem extends Component {
   state = {
     html: '',
     openMenu: false,
@@ -111,7 +110,7 @@ class NewsItem extends Child {
         -webkit-touch-callout: none !important;
       }
       h3, p, .block_timer_share{
-        margin-left: ${this.context.appState("webView").paddingLeft}px;
+        margin-left: ${this.props.paddingLeft}px;
         line-height: 1.3em;
         margin-right: 10px;
         font-size: ${this.props.fontSize}
@@ -132,7 +131,7 @@ class NewsItem extends Child {
         margin-left: 0px;
         margin-right: 5px;
         margin-top: 0px;
-        background-color: ${this.context.appState("webView").postBackground}
+        background-color: ${this.props.postBackground}
       }
     </style>
     <script>
@@ -400,7 +399,9 @@ const styles={
 const mapStateToProps = state => {
    return {
      openMenu: state.readerModalReducer.modalState,
-     fontSize: state.readerModalReducer.fontSize
+     fontSize: state.readerModalReducer.fontSize,
+     postBackground: state.readerModalReducer.postBackground,
+     paddingLeft: state.readerModalReducer.paddingLeft
    }
 }
 export default connect(mapStateToProps)(NewsItem);
