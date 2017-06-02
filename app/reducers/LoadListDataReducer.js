@@ -1,31 +1,30 @@
 import * as types from '../actions/types';
-const INITIAL_STATE = {list:[], modalState: true, selectedId: ''};
+const INITIAL_STATE = {list:[], selectedPost:1};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case types.ADD_FAVOR_VIDEO:
-      let oldList = state.list
-      return {
-        ...state,
-        list: [...oldList, action.payload]
-      }
-      break;
-    case types.REPLACE_FAVOR_VIDEO:
+    case types.LOAD_LIST_DATA:
       return {
         ...state,
         list: action.payload
       }
       break;
-    case types.CHANGE_MODAL_STATE:
+    case types.SELECTED_POST0:
       return {
         ...state,
-        modalState: action.payload
+        selectedPost0: action.payload
       }
       break;
-    case types.SELECT_ROW:
+    case types.SELECTED_POST1:
       return {
         ...state,
-        selectedId: action.payload
+        selectedPost1: action.payload
+      }
+      break;
+    case types.SELECTED_POST2:
+      return {
+        ...state,
+        selectedPost2: action.payload
       }
       break;
     default:

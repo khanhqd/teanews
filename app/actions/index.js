@@ -1,17 +1,19 @@
 import {
-  ADD_FAVOR_VIDEO,
+  LOAD_LIST_DATA,
   REPLACE_FAVOR_VIDEO,
   CHANGE_MODAL_STATE,
-  SELECT_ROW,
+  SELECTED_POST0,
+  SELECTED_POST1,
+  SELECTED_POST2,
   FONTSIZE_DEC,
   CHANGE_FONTSIZE
 } from './types';
 
 
-export const addFavorVideo = (item) => {
+export const loadListData = (data) => {
   return {
-    type: ADD_FAVOR_VIDEO ,
-    payload: item
+    type: LOAD_LIST_DATA,
+    payload: data
   }
 }
 export const replaceFavorVideo = (item) => {
@@ -26,15 +28,21 @@ export const changeModalState = (item) => {
     payload: item
   }
 }
-export const selectRow = (item) => {
+export const selectedPost0 = (item) => {
   return {
-    type: SELECT_ROW ,
+    type: SELECTED_POST0 ,
     payload: item
   }
 }
-export const changeFontSize = (item) => {
+export const selectedPost1 = (item) => {
   return {
-    type: CHANGE_FONTSIZE ,
+    type: SELECTED_POST1 ,
+    payload: item
+  }
+}
+export const selectedPost2 = (item) => {
+  return {
+    type: SELECTED_POST2 ,
     payload: item
   }
 }

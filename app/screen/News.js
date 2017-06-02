@@ -172,7 +172,9 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.39)'
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderColor: 'grey'
   },
   navBarButton: {
     backgroundColor: 'transparent',

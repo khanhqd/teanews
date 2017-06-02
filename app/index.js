@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Home from './screen/Home';
 import News from './screen/News';
+import NewsDetail from './screen/NewsDetail';
 
 import * as Animatable from 'react-native-animatable';
 const {width, height} = Dimensions.get("window");
@@ -56,6 +57,7 @@ export default class TeaNews extends Root {
         switch(this.state.scene) {
             case 'home': Page = <Home {...PageProps} />; break;
             case 'news': Page = <News {...PageProps} />; break;
+            case 'detail': Page = <NewsDetail {...PageProps} />; break;
             default: Page = <Home {...PageProps} />;
         }
         return ( this.state.welcomeScreen === true ? <Welcome /> :
@@ -69,7 +71,7 @@ export default class TeaNews extends Root {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9"
+    backgroundColor: "white"
   },
 });
 // module.exports.firebaseApp = firebaseApp;

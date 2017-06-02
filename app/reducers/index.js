@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import ListFavorVideo from './ListFavorVideo';
+import LoadListDataReducer from './LoadListDataReducer';
 import ReaderModalReducer from './ReaderModalReducer';
 
 export default combineReducers({
-  listFavorVideo: ListFavorVideo,
+  loadListDataReducer: LoadListDataReducer,
   readerModalReducer: ReaderModalReducer,
 })

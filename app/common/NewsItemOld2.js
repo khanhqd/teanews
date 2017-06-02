@@ -20,22 +20,6 @@ import { connect } from 'react-redux';
 import { changeFontSize, changeModalState } from '../actions';
 var WEBVIEW_REF = 'webview';
 
-const patchPostMessageFunction = function() {
-  var originalPostMessage = window.postMessage;
-
-  var patchedPostMessage = function(message, targetOrigin, transfer) {
-    originalPostMessage(message, targetOrigin, transfer);
-  };
-
-  patchedPostMessage.toString = function() {
-    return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
-  };
-
-  window.postMessage = patchedPostMessage;
-};
-
-const patchPostMessageJsCode = '(' + String(patchPostMessageFunction) + ')();';
-
 class NewsItem extends Child {
   state = {
     html: '',
@@ -48,14 +32,10 @@ class NewsItem extends Child {
   componentWillMount() {
     this.fetchContent()
   }
-  componentWillReceiveProps() {
-    this.fetchContent()
-    console.log('receiverprops')
-  }
   _share() {
     Share.share({
-      message: this.props.row.title,
-      url: this.props.row.url,
+      message: this.props.title,
+      url: this.props.url,
       title: 'From News App'
     }, {
         dialogTitle: 'From News App',
@@ -81,11 +61,11 @@ class NewsItem extends Child {
     }
   }
   _openLink() {
-    Linking.canOpenURL(this.props.row.url).then(supported => {
+    Linking.canOpenURL(this.props.url).then(supported => {
       if (supported) {
-        Linking.openURL(this.props.row.url);
+        Linking.openURL(this.props.url);
       } else {
-        console.log('Don\'t know how to open URI: ' + this.props.row.url);
+        console.log('Don\'t know how to open URI: ' + this.props.url);
       }
     });
   }
@@ -116,13 +96,14 @@ class NewsItem extends Child {
         margin-right: 10px;
         font-size: ${this.props.fontSize}
       }
-      noscript , script ,a, iframe,#wrapper_footer ,#box_tinkhac_detail,.box_tintaitro,
-       .main_show_comment.width_common,.title_show.txt_666,#box_xemnhieunhat,#col_300,
-       .block_tag.width_common.space_bottom_20,.text_xemthem ,#box_col_left,.form-control.change_gmt,
-       .tt_2,.back_tt ,#topbar,.box_tinkhac.width_common,#sticky_info_st,.col_fillter.box_sticky_left,
-       #menu-box,#header_web,.start.have_cap2,.cap2,.relative_new,.list_news_dot_3x3,.minutes,
-       .xemthem_new_ver.width_common,meta,link,.menu_main,.top_3,.number_bgs,.filter_right,
-       #live-updates-wrapper,.block_share.right{
+      .relative_new, .title_news, .block_share.right, .Image,.section0.width_common,.txt_coppy_right,.txt_lienhe,
+      script, i , iframe, #SexyAlertBox-Box, .block_tag.width_common.space_bottom_20,.start.have_cap2,.cap2,
+      #header_web, #col_300, #myvne_taskbar, #block_col_160 right,#block_search,#wrapper_footer,#box_tinlienquan,
+      .input_comment,.block_tag.width_common.space_bottom_20,.title_box_category.width_common,.block_more_info,
+      .xemthem_new_ver.width_common,.header_logo.width_common,.mid_header.width_common,noscript,.block_more_info,
+      #wrapper_header,.box_tinkhac.width_common,.footer.width_common,.button_chiase.line_3px.width_common,
+      .list_location_left.width_common.sticky_info_st.down,#topbar,.logo,.tt_2,.back_tt,.list_news,.width_common.list_10tinkhac,
+      #box_xemnhieunhat,.social_share.right,.minutes,.icon_live.icon_dot_live{
         display: none
       }
       html, body{
@@ -166,31 +147,59 @@ class NewsItem extends Child {
   }
 
   fetchContent() {
-    let url = this.props.row.url
-    console.log(this.props.row.url)
-    fetch(this.props.row.url)
+    let url = this.props.url
+    fetch(this.props.url)
       .then((response) => response.text())
       .then((responseData) => {
         $ = cheerio.load(responseData)
-        this.setState({ baseHTML: $('body').html() }, () => {
-          this.updateWebview()
-        })
+        // phân biệt các thể loại url
+        if (url.includes('http://vnexpress.net/projects/') == true) {
+          this.setState({ baseHTML: $('.mobile.visible-xs').html() }, () => {
+            this.updateWebview()
+          })
+        }
+        else if (url.includes('http://thethao.vnexpress.net/tuong-thuat/ban-tin-the-thao-toi')== true) {
+          this.setState({ baseHTML: $('#container_tab_live').html() }, () => {
+            this.updateWebview()
+          })
+        }
+        else if ($('#article_content').html() !== null) {
+          this.setState({ baseHTML: $('#article_content').html() }, () => {
+            this.updateWebview()
+          })
+        }
+        else if ($('.block_content_slide_showdetail').html() !== null) {
+          this.setState({ baseHTML: $('.block_content_slide_showdetail').html() }, () => {
+            this.updateWebview()
+          })
+        }
+        else if ($('.fck_detail.width_common').html() !== null) {
+          this.setState({ baseHTML: $('.fck_detail.width_common').html() }, () => {
+            this.updateWebview()
+          })
+        }
+        else {
+          this.setState({ baseHTML: $('.fck_detail.width_common.block_ads_connect').html() }, () => {
+            this.updateWebview()
+          })
+        }
       })
   }
   reloadWebview = () => {
     this.refs[WEBVIEW_REF].reload();
   };
-
   loading() {
+    console.log(this.state.html)
     if (true) {
       return (
+        <View>
           <WebView
             ref={WEBVIEW_REF}
-            style={{ width: width, height: height, backgroundColor: 'grey' }}
+            style={{ width: width }}
             javaScriptEnabled={true}
-            injectedJavaScript={patchPostMessageJsCode}
-            onMessage={(event) => { console.log(event) }}
+            onMessage={(event) => { this.setState({ textSelected: event.nativeEvent.data }) }}
             source={{ html: this.state.html }} />
+        </View>
       )
     } else {
       return (
@@ -202,11 +211,11 @@ class NewsItem extends Child {
   updateWebview() {
     this.setState({
       html:
-      `<div>
-          <img class="cover" src=${this.props.row.thumb}/>
-          <h1 class="title">${this.props.row.title}</h1>
+      `<body>
+          <img class="cover" src=${this.props.thumb}/>
+          <h1 class="title">${this.props.title}</h1>
           ${this.state.baseHTML + this.returnHtml()}
-          </div>
+          </body>
         `})
   }
   render() {
@@ -282,7 +291,7 @@ class NewsItem extends Child {
             <TouchableHighlight
               underlayColor="white"
               onPress={() => {
-                Clipboard.setString(this.props.row.url);
+                Clipboard.setString(this.props.url);
                 Toast.show('Đã sao chép link');
                 this.props.dispatch(changeModalState(!this.props.openMenu))
               }}
@@ -301,7 +310,7 @@ class NewsItem extends Child {
               onPress={() => {
                 Share.share({
                   message: this.state.textSelected,
-                  url: this.props.row.url,
+                  url: this.props.url,
                   title: 'From News App'
                 }, {
                     dialogTitle: 'From News App',
