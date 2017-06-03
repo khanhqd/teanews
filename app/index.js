@@ -10,6 +10,7 @@ import {
 import Home from './screen/Home';
 import News from './screen/News';
 import NewsDetail from './screen/NewsDetail';
+import Category from './screen/Category';
 
 import { StackNavigator } from 'react-navigation';
 import * as Animatable from 'react-native-animatable';
@@ -28,9 +29,18 @@ const {width, height} = Dimensions.get("window");
 export const TeaNews = StackNavigator({
   Home_Screen: {
     screen: Home,
+    navigationOptions: {
+      header: null,
+    }
   },
   Detail_Screen: {
     screen: NewsDetail,
+    navigationOptions: {
+      header: null,
+    }
+  },
+  Category_Screen: {
+    screen: Category,
     navigationOptions: {
       header: null,
     }

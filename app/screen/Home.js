@@ -264,7 +264,18 @@ class Home extends Component {
   render() {
     return (
       <View style={{flex:1}}>
-
+        <View style={styles.navBarContainer}>
+            <Image
+            style={{width: 25, height: 25, marginLeft: 20}}
+            source={require('../../img/navicon_menu.png')}/>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate('Category_Screen')}>
+              <View style={{marginRight: 20, height: 30, width: 100, alignItems: 'flex-end', justifyContent: 'center'}}>
+                <Text>
+                  Chọn Cate
+                </Text>
+              </View>
+            </TouchableOpacity>
+        </View>
         <View>
           <Animated.View
           ref={ (view) => topView = view }
@@ -298,11 +309,7 @@ class Home extends Component {
     );
   }
 }
-// <View style={styles.navBarContainer} {...this._panResponder.panHandlers}>
-//     <Image
-//     style={{width: 25, height: 25, marginLeft: 20}}
-//     source={require('../../img/navicon_menu.png')}/>
-// </View>
+
 
 const styles = StyleSheet.create({
   navBarContainer: {
@@ -318,6 +325,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     zIndex: 10,
     borderBottomWidth: 1,
     borderColor: 'grey'
