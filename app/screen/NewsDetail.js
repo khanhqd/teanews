@@ -44,40 +44,44 @@ class NewsDetail extends Component {
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: (event, gestureState) => {},
       onPanResponderMove: (event, gestureState) => {
-        if (gestureState.dx>20) {
           switch (this.state.index0) {
             case 2:
-                if (gestureState.dx > 0) {
+                if (gestureState.dx > 30) {
                   if (this.props.dataSlot0 >0) {
-                    this.state.left2.setValue(-width+gestureState.dx)
-                    this.state.left0.setValue(gestureState.dx)
+                    this.state.left2.setValue(-width+gestureState.dx-30)
+                    this.state.left0.setValue(gestureState.dx-30)
                   }
                 } else {
-                  this.state.left0.setValue(gestureState.dx)
-                  this.state.left1.setValue(width+gestureState.dx)
+                  if (gestureState.dx < -30) {
+                    this.state.left0.setValue(gestureState.dx+30)
+                    this.state.left1.setValue(width+gestureState.dx+30)
+                  }
                 }
                 break;
             case 3:
-                if (gestureState.dx > 0) {
-                  this.state.left0.setValue(-width+gestureState.dx)
-                  this.state.left1.setValue(gestureState.dx)
+                if (gestureState.dx > 30) {
+                  this.state.left0.setValue(-width+gestureState.dx-30)
+                  this.state.left1.setValue(gestureState.dx-30)
                 } else {
-                  this.state.left1.setValue(gestureState.dx)
-                  this.state.left2.setValue(width+gestureState.dx)
+                  if (gestureState.dx < -30) {
+                    this.state.left1.setValue(gestureState.dx+30)
+                    this.state.left2.setValue(width+gestureState.dx+30)
+                  }
                 }
                 break;
             case 1:
-                if (gestureState.dx > 0) {
-                  this.state.left1.setValue(-width+gestureState.dx)
-                  this.state.left2.setValue(gestureState.dx)
+                if (gestureState.dx > 30) {
+                  this.state.left1.setValue(-width+gestureState.dx-30)
+                  this.state.left2.setValue(gestureState.dx-30)
                 } else {
-                  this.state.left0.setValue(width+gestureState.dx)
-                  this.state.left2.setValue(gestureState.dx)
+                  if (gestureState.dx < -30) {
+                    this.state.left0.setValue(width+gestureState.dx+30)
+                    this.state.left2.setValue(gestureState.dx+30)
+                  }
                 }
                 break;
           }
           this.setState({ dx: gestureState.dx})
-        }
       },
       onPanResponderRelease: (event, gestureState) => {
         console.log(gestureState.vx)

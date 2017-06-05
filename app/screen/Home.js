@@ -93,9 +93,9 @@ class Home extends Component {
     var bigData = [];
     function compare(a,b) {
       if (a.date < b.date)
-        return -1;
-      if (a.date > b.date)
         return 1;
+      if (a.date > b.date)
+        return -1;
       return 0;
     }
     for (var i=0; i<listCate.length; i++) {
