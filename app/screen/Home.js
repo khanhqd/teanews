@@ -20,7 +20,7 @@ const cheerio = require('cheerio-without-node-native');
 
 import { loadListData, selectedPost0, selectedPost1, selectedPost2 } from '../actions';
 import { connect } from 'react-redux';
-import { replaceListCate } from '../actions';
+import { replaceListCate, reload } from '../actions';
 
 class Home extends Component {
   static navigationOptions = {
@@ -99,12 +99,21 @@ class Home extends Component {
       return 0;
     }
     for (var i=0; i<listCate.length; i++) {
+      console.log(listCate.length)
       for (var n=0; n <this.state["data"+i].length; n++) {
         bigData.push(this.state["data"+i][n]);
       }
       this.setState({bigData: bigData.sort(compare), loading: false},()=>{
+        console.log(bigData.sort(compare))
         this.props.dispatch(loadListData(this.state.bigData))
       })
+    }
+  }
+  componentWillReceiveProps(props){
+    console.log(props)
+    if(props.reload) {
+      this._get('listCate')
+      this.props.dispatch(reload(false))
     }
   }
   componentWillMount() {
@@ -391,6 +400,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
    return {
      listCate: state.listCateReducer.list,
+     reload: state.listCateReducer.reload
    }
 }
 export default connect(mapStateToProps)(Home);

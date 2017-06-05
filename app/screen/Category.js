@@ -22,7 +22,7 @@ const Item = [
     { name: 'Du lịch', link: 'http://vnexpress.net/rss/du-lich.rss' },
 ]
 import { connect } from 'react-redux';
-import { addCate, replaceListCate } from '../actions';
+import { addCate, replaceListCate, reload } from '../actions';
 
 class Category extends Component {
     constructor() {
@@ -60,8 +60,10 @@ class Category extends Component {
         })
     }
     saveCate() {
+      console.log(this.props.listCate)
       this._set('listCate', JSON.stringify(this.props.listCate));
-      this.props.navigation.goBack()
+      this.props.navigation.goBack();
+      setTimeout(()=>{this.props.dispatch(reload(true))},100)
     }
     render() {
         return (
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
 })
 const mapStateToProps = state => {
   return {
-    listCate: state.listCateReducer.list,
+    listCate: state.listCateReducer.list
   }
 }
 export default connect(mapStateToProps)(Category);

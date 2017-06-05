@@ -1,5 +1,5 @@
 import * as types from '../actions/types';
-const INITIAL_STATE = {list:[]};
+const INITIAL_STATE = {list:[], reload:false};
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -14,6 +14,12 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         list: action.payload
+      }
+      break;
+    case types.RELOAD:
+      return {
+        ...state,
+        reload: action.payload
       }
       break;
     default:

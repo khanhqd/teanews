@@ -10,7 +10,8 @@ import {
   CHANGE_BACKGROUND_COLOR,
   CHANGE_PADDING_LEFT,
   ADD_CATE,
-  REPLACE_LIST_CATE
+  REPLACE_LIST_CATE,
+  RELOAD
 } from './types';
 
 
@@ -78,6 +79,12 @@ export const replaceListCate = (item) => {
   return {
     type: REPLACE_LIST_CATE ,
     payload: item
+  }
+}
+export const reload = (data) => {
+  return {
+    type: RELOAD,
+    payload: data
   }
 }
 // export const goToPlay = (number) => {

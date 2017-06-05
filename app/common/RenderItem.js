@@ -49,8 +49,9 @@ class RenderItem extends Component {
               name: this.props.item.name,
               link: this.props.item.link
             }
+            console.log(cateInfo)
             list.push(cateInfo)
-            this.props.dispatch(addCate(cateInfo))
+            this.props.dispatch(replaceListCate(list))
             this.setState({ selected: true, loading: false })
             Toast.show('Đã lưu vào danh mục yêu thích')
           }
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
     },
 })
 const mapStateToProps = state => {
+  console.log(state.listCateReducer.list)
   return {
     listCate: state.listCateReducer.list,
   }
