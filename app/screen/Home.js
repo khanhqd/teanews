@@ -99,12 +99,10 @@ class Home extends Component {
       return 0;
     }
     for (var i=0; i<listCate.length; i++) {
-      console.log(listCate.length)
       for (var n=0; n <this.state["data"+i].length; n++) {
         bigData.push(this.state["data"+i][n]);
       }
       this.setState({bigData: bigData.sort(compare), loading: false},()=>{
-        console.log(bigData.sort(compare))
         this.props.dispatch(loadListData(this.state.bigData))
       })
     }

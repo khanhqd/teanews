@@ -11,7 +11,7 @@ import {
 var Toast = require('react-native-toast');
 import { connect } from 'react-redux';
 import { addCate, replaceListCate } from '../actions';
-
+const {height, width} = Dimensions.get('window')
 class RenderItem extends Component {
     constructor(props) {
       super(props);
@@ -71,12 +71,12 @@ class RenderItem extends Component {
 const styles = StyleSheet.create({
     item: {
         height: 30,
-        width: 100,
+        width: width/5+10,
         borderWidth: 1,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 13,
+        margin: 20,
     },
 })
 const mapStateToProps = state => {

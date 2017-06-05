@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, Platform, TouchableOpacity, Image,
+import {
+  View, Text, Dimensions, Platform, TouchableOpacity, Image,
   TouchableHighlight,
   TextInput,
   WebView,
@@ -7,8 +8,9 @@ import { View, Text, Dimensions, Platform, TouchableOpacity, Image,
   Linking,
   Clipboard,
   ScrollView,
-  AsyncStorage } from 'react-native';
-var {height, width} = Dimensions.get('window');
+  AsyncStorage
+} from 'react-native';
+var { height, width } = Dimensions.get('window');
 
 import { RunsItem, Button1 } from '../common';
 const cheerio = require('cheerio-without-node-native');
@@ -19,14 +21,14 @@ import { connect } from 'react-redux';
 import { changeFontSize, changeModalState } from '../actions';
 var WEBVIEW_REF = 'webview';
 
-const patchPostMessageFunction = function() {
+const patchPostMessageFunction = function () {
   var originalPostMessage = window.postMessage;
 
-  var patchedPostMessage = function(message, targetOrigin, transfer) {
+  var patchedPostMessage = function (message, targetOrigin, transfer) {
     originalPostMessage(message, targetOrigin, transfer);
   };
 
-  patchedPostMessage.toString = function() {
+  patchedPostMessage.toString = function () {
     return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
   };
 
@@ -52,9 +54,9 @@ class NewsItem extends Component {
     this.fetchContent(this.props.row)
   }
   fetchContent(row) {
-    this.setState({loading:true})
+    this.setState({ loading: true })
     let url = row.url
-    console.log(row.url)
+    let other = []
     fetch(row.url)
       .then((response) => response.text())
       .then((responseData) => {
@@ -62,10 +64,18 @@ class NewsItem extends Component {
         this.setState({ baseHTML: $('body').html() }, () => {
           this.updateWebview(row)
         })
+        $('#box_tinkhac_detail> div>ul> li').each(function () {
+          other.push({
+            url: $(this).find('h2').find('a').attr('href'),
+            title: $(this).find('h2').find('a').text(),
+            thumb: $(this).find('div').find('a').find('img').attr('src')
+
+          })
+        })
+        console.log(other)
       })
   }
   updateWebview(row) {
-    console.log('update '+ row.title)
     this.setState({
       html:
       `<div>
@@ -73,7 +83,7 @@ class NewsItem extends Component {
           <h1 class="title">${row.title}</h1>
           ${this.state.baseHTML + this.returnHtml()}
           </div>
-        `},()=>{this.setState({loading: false})})
+        `}, () => { this.setState({ loading: false }) })
   }
   _share() {
     Share.share({
@@ -148,7 +158,7 @@ class NewsItem extends Component {
        .tt_2,.back_tt ,#topbar,.box_tinkhac.width_common,#sticky_info_st,.col_fillter.box_sticky_left,
        #menu-box,#header_web,.start.have_cap2,.cap2,.relative_new,.list_news_dot_3x3,.minutes,
        .xemthem_new_ver.width_common,meta,link,.menu_main,.top_3,.number_bgs,.filter_right,
-       #live-updates-wrapper,.block_share.right{
+       #live-updates-wrapper,.block_share.right,.block_goithutoasoan{
         display: none
       }
       html, body{
@@ -199,13 +209,13 @@ class NewsItem extends Component {
   loading() {
     if (!this.state.loading) {
       return (
-          <WebView
-            ref={WEBVIEW_REF}
-            style={{ width: width, height: height, backgroundColor: 'grey' }}
-            javaScriptEnabled={true}
-            injectedJavaScript={patchPostMessageJsCode}
-            onMessage={(event) => { console.log(event) }}
-            source={{ html: this.state.html }} />
+        <WebView
+          ref={WEBVIEW_REF}
+          style={{ width: width, height: height, backgroundColor: 'grey' }}
+          javaScriptEnabled={true}
+          injectedJavaScript={patchPostMessageJsCode}
+          onMessage={(event) => { console.log(event) }}
+          source={{ html: this.state.html }} />
       )
     } else {
       return (
@@ -217,7 +227,7 @@ class NewsItem extends Component {
 
   render() {
     return (
-      <View style={{ alignItems: 'center', flex:1}}>
+      <View style={{ alignItems: 'center', flex: 1 }}>
         {this.loading()}
         {this.props.openMenu &&
           <Animatable.View animation="slideInDown" duration={300} style={styles.menuModal}>
@@ -225,12 +235,12 @@ class NewsItem extends Component {
               underlayColor="white"
               onPress={() => {
                 this.props.dispatch(changeFontSize(this.props.fontSize + 2));
-                setTimeout(()=>{
+                setTimeout(() => {
                   this.updateWebview()
                   this.props.dispatch(changeModalState(!this.props.openMenu))
-                },100)
+                }, 100)
                 if (Platform.OS === 'android') {
-                  setTimeout(()=>this.reloadWebview(),200)
+                  setTimeout(() => this.reloadWebview(), 200)
                 }
               }}
               style={styles.modalItem}>
@@ -242,12 +252,12 @@ class NewsItem extends Component {
               underlayColor="white"
               onPress={() => {
                 this.props.dispatch(changeFontSize(this.props.fontSize - 2));
-                setTimeout(()=>{
+                setTimeout(() => {
                   this.updateWebview()
                   this.props.dispatch(changeModalState(!this.props.openMenu))
-                },100)
+                }, 100)
                 if (Platform.OS === 'android') {
-                  setTimeout(()=>this.reloadWebview(),200)
+                  setTimeout(() => this.reloadWebview(), 200)
                 }
               }}
               style={styles.modalItem}>
@@ -278,7 +288,7 @@ class NewsItem extends Component {
             </TouchableHighlight>
             <TouchableHighlight
               underlayColor="white"
-              onPress={() => {this._saveBookmark(); this.props.dispatch(changeModalState(!this.props.openMenu))}}
+              onPress={() => { this._saveBookmark(); this.props.dispatch(changeModalState(!this.props.openMenu)) }}
               style={styles.modalItem}>
               <View>
                 <Text style={styles.modalText}>Lưu
@@ -333,7 +343,7 @@ class NewsItem extends Component {
   }
 }
 
-const styles={
+const styles = {
   container: {
 
   },
@@ -404,11 +414,11 @@ const styles={
   },
 }
 const mapStateToProps = state => {
-   return {
-     openMenu: state.readerModalReducer.modalState,
-     fontSize: state.readerModalReducer.fontSize,
-     postBackground: state.readerModalReducer.postBackground,
-     paddingLeft: state.readerModalReducer.paddingLeft
-   }
+  return {
+    openMenu: state.readerModalReducer.modalState,
+    fontSize: state.readerModalReducer.fontSize,
+    postBackground: state.readerModalReducer.postBackground,
+    paddingLeft: state.readerModalReducer.paddingLeft
+  }
 }
 export default connect(mapStateToProps)(NewsItem);
