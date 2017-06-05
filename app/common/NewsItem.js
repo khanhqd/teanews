@@ -21,22 +21,6 @@ import { connect } from 'react-redux';
 import { changeFontSize, changeModalState } from '../actions';
 var WEBVIEW_REF = 'webview';
 
-const patchPostMessageFunction = function () {
-  var originalPostMessage = window.postMessage;
-
-  var patchedPostMessage = function (message, targetOrigin, transfer) {
-    originalPostMessage(message, targetOrigin, transfer);
-  };
-
-  patchedPostMessage.toString = function () {
-    return String(Object.hasOwnProperty).replace('hasOwnProperty', 'postMessage');
-  };
-
-  window.postMessage = patchedPostMessage;
-};
-
-const patchPostMessageJsCode = '(' + String(patchPostMessageFunction) + ')();';
-
 class NewsItem extends Component {
   state = {
     html: '',
@@ -194,7 +178,7 @@ class NewsItem extends Component {
       }
 
       document.onmouseup = document.onkeyup = document.onselectionchange = function() {
-        window.postMessage(getSelectionText());
+        window.postMessageNative(getSelectionText());
       };
     </script>
     `;
@@ -209,13 +193,12 @@ class NewsItem extends Component {
   loading() {
     if (!this.state.loading) {
       return (
-        <WebView
-          ref={WEBVIEW_REF}
-          style={{ width: width, height: height, backgroundColor: 'grey' }}
-          javaScriptEnabled={true}
-          injectedJavaScript={patchPostMessageJsCode}
-          onMessage={(event) => { console.log(event) }}
-          source={{ html: this.state.html }} />
+          <WebView
+            ref={WEBVIEW_REF}
+            style={{ width: width, height: height, backgroundColor: 'grey' }}
+            javaScriptEnabled={true}
+            onMessage={(event) => { this.setState({ textSelected: event.nativeEvent.data },()=>alert(this.state.textSelected)) }}
+            source={{ html: this.state.html }} />
       )
     } else {
       return (

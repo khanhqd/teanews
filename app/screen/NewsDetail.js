@@ -39,43 +39,45 @@ class NewsDetail extends Component {
   };
   componentWillMount() {
     this._panResponder = PanResponder.create({
-      onMoveShouldSetResponderCapture: () => true,
+      onMoveShouldSetResponderCapture: (event, gestureState) => {console.log(gestureState)},
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: (event, gestureState) => {},
       onPanResponderMove: (event, gestureState) => {
-        switch (this.state.index0) {
-          case 2:
-              if (gestureState.dx > 0) {
-                if (this.props.dataSlot0 >0) {
-                  this.state.left2.setValue(-width+gestureState.dx)
+        if (gestureState.dx>20) {
+          switch (this.state.index0) {
+            case 2:
+                if (gestureState.dx > 0) {
+                  if (this.props.dataSlot0 >0) {
+                    this.state.left2.setValue(-width+gestureState.dx)
+                    this.state.left0.setValue(gestureState.dx)
+                  }
+                } else {
                   this.state.left0.setValue(gestureState.dx)
+                  this.state.left1.setValue(width+gestureState.dx)
                 }
-              } else {
-                this.state.left0.setValue(gestureState.dx)
-                this.state.left1.setValue(width+gestureState.dx)
-              }
-              break;
-          case 3:
-              if (gestureState.dx > 0) {
-                this.state.left0.setValue(-width+gestureState.dx)
-                this.state.left1.setValue(gestureState.dx)
-              } else {
-                this.state.left1.setValue(gestureState.dx)
-                this.state.left2.setValue(width+gestureState.dx)
-              }
-              break;
-          case 1:
-              if (gestureState.dx > 0) {
-                this.state.left1.setValue(-width+gestureState.dx)
-                this.state.left2.setValue(gestureState.dx)
-              } else {
-                this.state.left0.setValue(width+gestureState.dx)
-                this.state.left2.setValue(gestureState.dx)
-              }
-              break;
+                break;
+            case 3:
+                if (gestureState.dx > 0) {
+                  this.state.left0.setValue(-width+gestureState.dx)
+                  this.state.left1.setValue(gestureState.dx)
+                } else {
+                  this.state.left1.setValue(gestureState.dx)
+                  this.state.left2.setValue(width+gestureState.dx)
+                }
+                break;
+            case 1:
+                if (gestureState.dx > 0) {
+                  this.state.left1.setValue(-width+gestureState.dx)
+                  this.state.left2.setValue(gestureState.dx)
+                } else {
+                  this.state.left0.setValue(width+gestureState.dx)
+                  this.state.left2.setValue(gestureState.dx)
+                }
+                break;
+          }
+          this.setState({ dx: gestureState.dx})
         }
-        this.setState({ dx: gestureState.dx})
       },
       onPanResponderRelease: (event, gestureState) => {
         console.log(gestureState.vx)
