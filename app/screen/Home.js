@@ -9,7 +9,8 @@ import {
   ScrollView,
   Platform,
   PanResponder,
-  Animated
+  Animated,
+  AsyncStorage
 } from 'react-native';
 var {height, width} = Dimensions.get('window');
 import { Button1 } from '../common';
@@ -19,6 +20,7 @@ const cheerio = require('cheerio-without-node-native');
 
 import { loadListData, selectedPost0, selectedPost1, selectedPost2 } from '../actions';
 import { connect } from 'react-redux';
+import { replaceListCate } from '../actions';
 
 class Home extends Component {
   static navigationOptions = {
@@ -37,19 +39,73 @@ class Home extends Component {
       index0: 2,
       index1: 1,
       index2: 3,
-      dataSlot0: 1,
-      dataSlot1: 2,
-      dataSlot2: 0,
+      dataSlot0: 0,
+      dataSlot1: 1,
+      dataSlot2: -1,
       dy: 0,
+      listCate: [],
+      loading: true,
+      bigData: []
     }
     topViewStyle = {
       style:{
         top: paddingTop
       }
     }
+    this._get('listCate')
   }
   _updateStyle() {
     topView && topView.setNativeProps(topViewStyle)
+  }
+  _get = async (key) => {
+    try {var value = await AsyncStorage.getItem(key);
+      if (value !== null){
+        switch (key) {
+          case 'listCate':
+            this.props.dispatch(replaceListCate(JSON.parse(value)))
+            this.setState({ listCate:JSON.parse(value) },()=>{
+              let listCate = this.state.listCate;
+              if (listCate.length > 0) {
+                let newObj = {};
+                for(var i=0; i<listCate.length; i++) {
+                  newObj["data"+i] = []
+                }
+                this.setState({...newObj},()=>{
+                    let arrPromise = listCate.map((val, index) =>{
+                      return new Promise((resolve, reject)=>{
+                        this.fetchData(val.link,index, resolve)
+                      })
+                    })
+                    Promise.all(arrPromise).then(()=>{
+                      this.arrangeData()
+                    })
+                })
+              } else {
+                  this.fetchData('http://vnexpress.net/rss/kinh-doanh.rss')
+              }
+            })
+            break;
+        }}}catch (error) {alert(error)}
+  };
+
+  arrangeData() {
+    let listCate = this.state.listCate;
+    var bigData = [];
+    function compare(a,b) {
+      if (a.date < b.date)
+        return -1;
+      if (a.date > b.date)
+        return 1;
+      return 0;
+    }
+    for (var i=0; i<listCate.length; i++) {
+      for (var n=0; n <this.state["data"+i].length; n++) {
+        bigData.push(this.state["data"+i][n]);
+      }
+      this.setState({bigData: bigData.sort(compare), loading: false},()=>{
+        this.props.dispatch(loadListData(this.state.bigData))
+      })
+    }
   }
   componentWillMount() {
     this._panResponder = PanResponder.create({
@@ -219,11 +275,11 @@ class Home extends Component {
     });
   }
   componentDidMount() {
-    this.fetchData()
+
   }
-  fetchData() {
-        let data = this.state.data
-        fetch(`http://vnexpress.net/rss/the-thao.rss`)
+  fetchData(linkRSS,i, callback) {
+        let data = this.state["data"+i]
+        fetch(linkRSS)
             .then((response) => response.text())
             .then((responseData) => {
                 $ = cheerio.load(responseData, {
@@ -243,16 +299,14 @@ class Home extends Component {
                           thumb : CDATA.slice(vitribatdau +5 , vitriketthuc-1).replace("_180x108",""),
                           des: CDATA.slice(vitribatdauDes+5 , vitriketthucDes),
                           url:url,
-                          date: $(this).find('pubDate').text()
+                          date: new Date($(this).find('pubDate').text()).getTime()
                       })
                     }
                 })
                 this.setState({
-                  data:data,
+                  ['data' + i]: data,
                   refreshing:false,
-                },()=>{
-                  this.props.dispatch(loadListData(data))
-                })
+                }, () => callback())
             })
     }
   toDetail(postId) {
@@ -276,35 +330,38 @@ class Home extends Component {
               </View>
             </TouchableOpacity>
         </View>
-        <View>
-          <Animated.View
-          ref={ (view) => topView = view }
-          style={{position: 'absolute', top: this.state.top0, zIndex: this.state.index0, backgroundColor: (this.state.index0==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
-          {...this._panResponder.panHandlers}>
-            <NewsItem2
-            onPress={()=>this.toDetail(this.state.dataSlot0)}
-            data={this.state.data[this.state.dataSlot0]}/>
-          </Animated.View>
+        {!this.state.loading ?
+          <View>
+            <Animated.View
+            ref={ (view) => topView = view }
+            style={{position: 'absolute', top: this.state.top0, zIndex: this.state.index0, backgroundColor: (this.state.index0==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
+            {...this._panResponder.panHandlers}>
+              <NewsItem2
+              onPress={()=>this.toDetail(this.state.dataSlot0)}
+              data={this.state.bigData[this.state.dataSlot0]}/>
+            </Animated.View>
 
-          <Animated.View
-          ref={ (view) => topView = view }
-          style={{position: 'absolute', top: this.state.top1, zIndex: this.state.index1, backgroundColor: (this.state.index1==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
-          {...this._panResponder.panHandlers}>
-            <NewsList
-            navigation={this.props.navigation}
-            data={this.state.data.slice(this.state.dataSlot1,this.state.dataSlot1+5)}
-            dataIndex={this.state.dataSlot1}/>
-          </Animated.View>
+            <Animated.View
+            ref={ (view) => topView = view }
+            style={{position: 'absolute', top: this.state.top1, zIndex: this.state.index1, backgroundColor: (this.state.index1==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
+            {...this._panResponder.panHandlers}>
+              <NewsList
+              navigation={this.props.navigation}
+              data={this.state.bigData.slice(this.state.dataSlot1,this.state.dataSlot1+5)}
+              dataIndex={this.state.dataSlot1}/>
+            </Animated.View>
 
-          <Animated.View
-          ref={ (view) => topView = view }
-          style={{position: 'absolute', top: this.state.top2, zIndex: this.state.index2, backgroundColor: (this.state.index2==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
-          {...this._panResponder.panHandlers}>
-            <NewsItem2
-            onPress={()=>this.toDetail(this.state.dataSlot2)}
-            data={this.state.data[this.state.dataSlot2]}/>
-          </Animated.View>
-        </View>
+            <Animated.View
+            ref={ (view) => topView = view }
+            style={{position: 'absolute', top: this.state.top2, zIndex: this.state.index2, backgroundColor: (this.state.index2==1)? 'rgba(232, 232, 232, 0.43)' : 'white'}}
+            {...this._panResponder.panHandlers}>
+              <NewsItem2
+              onPress={()=>this.toDetail(this.state.dataSlot2)}
+              data={this.state.bigData[this.state.dataSlot2]}/>
+            </Animated.View>
+          </View>
+          :
+          <View><Text>Loading...</Text></View>}
       </View>
     );
   }
@@ -333,6 +390,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
    return {
+     listCate: state.listCateReducer.list,
    }
 }
 export default connect(mapStateToProps)(Home);

@@ -6,6 +6,7 @@ import {
     Dimensions,
     StyleSheet,
     Image,
+    AsyncStorage
 } from 'react-native'
 import RenderItem from '../common/RenderItem.js'
 const { height, width } = Dimensions.get('window')
@@ -20,21 +21,48 @@ const Item = [
     { name: 'Khoa học', link: 'http://vnexpress.net/rss/khoa-hoc.rss' },
     { name: 'Du lịch', link: 'http://vnexpress.net/rss/du-lich.rss' },
 ]
-export default class Category extends Component {
+import { connect } from 'react-redux';
+import { addCate, replaceListCate } from '../actions';
+
+class Category extends Component {
+    constructor() {
+      super();
+      state={
+        listCate: []
+      }
+    }
+    componentWillMount() {
+      this._get('listCate')
+    }
+    _get = async (key) => {
+      try {var value = await AsyncStorage.getItem(key);
+        if (value !== null){
+          switch (key) {
+            case 'listCate':
+              this.props.dispatch(replaceListCate(JSON.parse(value)))
+              break;
+          }}}catch (error) {alert(error)}
+    };
+    _set = async (key, value) => {
+      try {await AsyncStorage.setItem(key, value);}
+      catch (error) {console.log(error.message)}
+    };
     renderItem() {
-        var _this = this
+    // alert(JSON.stringify(this.state.listCate))
         return Item.map(function (item, index) {
             return (
                 <RenderItem
-                onPress={()=>{}}
-                selected={false}
+                listCate={this.state.listCate}
                 key={index}
                 item={item}
                 />
             )
         })
     }
-    
+    saveCate() {
+      this._set('listCate', JSON.stringify(this.props.listCate));
+      this.props.navigation.goBack()
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -48,9 +76,10 @@ export default class Category extends Component {
                     {this.renderItem()}
                 </View>
                 <View style={styles.smallContainer}>
-                    <View style={[styles.loginButton, { backgroundColor: 'white' }]}>
+                    <TouchableOpacity
+                    onPress={()=>this.saveCate()} style={[styles.loginButton, { backgroundColor: 'white' }]}>
                         <Text>Lưu</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         )
@@ -109,3 +138,9 @@ const styles = StyleSheet.create({
     },
 
 })
+const mapStateToProps = state => {
+  return {
+    listCate: state.listCateReducer.list,
+  }
+}
+export default connect(mapStateToProps)(Category);

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 class NewsItem2 extends Component {
   render() {
     if (this.props.data) {
+      var date = new Date(this.props.data.date)
       return (
         <TouchableOpacity
         onPress={this.props.onPress}
@@ -18,7 +19,7 @@ class NewsItem2 extends Component {
             style={{height: 255, width: width}}/>
             <Text style={styles.title}>{this.props.data.title}
             </Text>
-            <Text style={styles.date}>{this.props.data.date}
+            <Text style={styles.date}>{date.toLocaleString()}
             </Text>
             <Text style={styles.description}>{this.props.data.des}
             </Text>

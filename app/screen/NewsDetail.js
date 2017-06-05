@@ -289,13 +289,15 @@ class NewsDetail extends Component {
               row={this.props.listData[this.props.dataSlot1]}/>
           </Animated.View>
 
-          <Animated.View
-          ref={ (view) => topView = view }
-          style={{position: 'absolute', left: this.state.left2, zIndex: this.state.index2, backgroundColor: 'transparent'}}
-          {...this._panResponder.panHandlers}>
-              <NewsItem
-              row={this.props.listData[this.props.dataSlot2]}/>
-          </Animated.View>
+          {(this.props.dataSlot2>-1) &&
+            <Animated.View
+            ref={ (view) => topView = view }
+            style={{position: 'absolute', left: this.state.left2, zIndex: this.state.index2, backgroundColor: 'transparent'}}
+            {...this._panResponder.panHandlers}>
+                <NewsItem
+                row={this.props.listData[this.props.dataSlot2]}/>
+            </Animated.View>
+          }
 
         </View>
 
@@ -322,7 +324,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderColor: 'grey'
+    borderColor: 'grey',
+    ...Platform.select({
+      ios: {
+        height: 65,
+        paddingTop: 15
+      },
+      android: {
+        height: 50
+      }
+    }),
   },
   navBarButton: {
     backgroundColor: 'transparent',
@@ -338,7 +349,6 @@ const styles = StyleSheet.create({
   },
 });
 const mapStateToProps = state => {
-  console.log(state.loadListDataReducer.selectedPost2)
    return {
      listData: state.loadListDataReducer.list,
      dataSlot0: state.loadListDataReducer.selectedPost0,

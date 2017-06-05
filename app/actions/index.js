@@ -8,7 +8,9 @@ import {
   FONTSIZE_DEC,
   CHANGE_FONTSIZE,
   CHANGE_BACKGROUND_COLOR,
-  CHANGE_PADDING_LEFT
+  CHANGE_PADDING_LEFT,
+  ADD_CATE,
+  REPLACE_LIST_CATE
 } from './types';
 
 
@@ -64,6 +66,18 @@ export const fontSizeDec = (item) => {
   return {
     type: FONTSIZE_DEC ,
     payload: size
+  }
+}
+export const addCate = (item) => {
+  return {
+    type: ADD_CATE ,
+    payload: item
+  }
+}
+export const replaceListCate = (item) => {
+  return {
+    type: REPLACE_LIST_CATE ,
+    payload: item
   }
 }
 // export const goToPlay = (number) => {

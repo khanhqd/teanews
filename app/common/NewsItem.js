@@ -46,11 +46,34 @@ class NewsItem extends Component {
     loading: false
   };
   componentWillMount() {
-    this.fetchContent()
+    this.fetchContent(this.props.row)
   }
   componentWillReceiveProps() {
-    this.fetchContent()
-    console.log('receiverprops')
+    this.fetchContent(this.props.row)
+  }
+  fetchContent(row) {
+    this.setState({loading:true})
+    let url = row.url
+    console.log(row.url)
+    fetch(row.url)
+      .then((response) => response.text())
+      .then((responseData) => {
+        $ = cheerio.load(responseData)
+        this.setState({ baseHTML: $('body').html() }, () => {
+          this.updateWebview(row)
+        })
+      })
+  }
+  updateWebview(row) {
+    console.log('update '+ row.title)
+    this.setState({
+      html:
+      `<div>
+          <img class="cover" src=${row.thumb}/>
+          <h1 class="title">${row.title}</h1>
+          ${this.state.baseHTML + this.returnHtml()}
+          </div>
+        `},()=>{this.setState({loading: false})})
   }
   _share() {
     Share.share({
@@ -116,6 +139,9 @@ class NewsItem extends Component {
         margin-right: 10px;
         font-size: ${this.props.fontSize}
       }
+      li{
+        list-style-type:none;
+      }
       noscript , script ,a, iframe,#wrapper_footer ,#box_tinkhac_detail,.box_tintaitro,
        .main_show_comment.width_common,.title_show.txt_666,#box_xemnhieunhat,#col_300,
        .block_tag.width_common.space_bottom_20,.text_xemthem ,#box_col_left,.form-control.change_gmt,
@@ -165,19 +191,7 @@ class NewsItem extends Component {
     return htmlPlus
   }
 
-  fetchContent() {
-    this.setState({loading:true})
-    let url = this.props.row.url
-    console.log(this.props.row.url)
-    fetch(this.props.row.url)
-      .then((response) => response.text())
-      .then((responseData) => {
-        $ = cheerio.load(responseData)
-        this.setState({ baseHTML: $('body').html() }, () => {
-          this.updateWebview()
-        })
-      })
-  }
+
   reloadWebview = () => {
     this.refs[WEBVIEW_REF].reload();
   };
@@ -200,16 +214,7 @@ class NewsItem extends Component {
       )
     }
   }
-  updateWebview() {
-    this.setState({
-      html:
-      `<div>
-          <img class="cover" src=${this.props.row.thumb}/>
-          <h1 class="title">${this.props.row.title}</h1>
-          ${this.state.baseHTML + this.returnHtml()}
-          </div>
-        `},()=>{this.setState({loading: false})})
-  }
+
   render() {
     return (
       <View style={{ alignItems: 'center', flex:1}}>
