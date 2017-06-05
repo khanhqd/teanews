@@ -322,6 +322,17 @@ class Home extends Component {
     this.props.dispatch(selectedPost2(postId-1))
     setTimeout(()=>{this.props.navigation.navigate('Detail_Screen')},300)
   }
+  renderLoading() {
+    if(this.props.listCate.length == 0) {
+      return (
+        <View><Text>Hãy chọn Category --></Text></View>
+      )
+    } else {
+      return (
+        <View><Text>Loading...</Text></View>
+      )
+    }
+  }
   render() {
     return (
       <View style={{flex:1}}>
@@ -368,7 +379,8 @@ class Home extends Component {
             </Animated.View>
           </View>
           :
-          <View><Text>Loading...</Text></View>}
+          this.renderLoading()}
+
       </View>
     );
   }
