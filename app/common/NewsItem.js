@@ -34,8 +34,10 @@ class NewsItem extends Component {
   componentWillMount() {
     this.fetchContent(this.props.row)
   }
-  componentWillReceiveProps() {
-    this.fetchContent(this.props.row)
+  componentWillReceiveProps(props) {
+    if(props.row != this.props.row) {
+      this.fetchContent(props.row)
+    }
   }
   fetchContent(row) {
     this.setState({ loading: true })
@@ -195,9 +197,9 @@ class NewsItem extends Component {
       return (
           <WebView
             ref={WEBVIEW_REF}
-            style={{ width: width, height: height, backgroundColor: 'grey' }}
+            style={{ width: width, height: height-50, backgroundColor: 'grey' }}
             javaScriptEnabled={true}
-            onMessage={(event) => { this.setState({ textSelected: event.nativeEvent.data },()=>alert(this.state.textSelected)) }}
+            onMessage={(event) => { this.setState({ textSelected: event.nativeEvent.data }) }}
             source={{ html: this.state.html }} />
       )
     } else {
@@ -219,7 +221,7 @@ class NewsItem extends Component {
               onPress={() => {
                 this.props.dispatch(changeFontSize(this.props.fontSize + 2));
                 setTimeout(() => {
-                  this.updateWebview()
+                  this.updateWebview(this.props.row)
                   this.props.dispatch(changeModalState(!this.props.openMenu))
                 }, 100)
                 if (Platform.OS === 'android') {
@@ -236,7 +238,7 @@ class NewsItem extends Component {
               onPress={() => {
                 this.props.dispatch(changeFontSize(this.props.fontSize - 2));
                 setTimeout(() => {
-                  this.updateWebview()
+                  this.updateWebview(this.props.row)
                   this.props.dispatch(changeModalState(!this.props.openMenu))
                 }, 100)
                 if (Platform.OS === 'android') {
@@ -389,7 +391,7 @@ const styles = {
         borderLeftWidth: 0.5,
       }
     }),
-    top: 40,
+    top: 5,
     right: 0,
     width: 100,
     elevation: 5,

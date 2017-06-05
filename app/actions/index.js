@@ -63,10 +63,10 @@ export const changePaddingLeft = (item) => {
     paddingLeft: item
   }
 }
-export const fontSizeDec = (item) => {
+export const changeFontSize = (item) => {
   return {
-    type: FONTSIZE_DEC ,
-    payload: size
+    type: CHANGE_FONTSIZE ,
+    payload: item
   }
 }
 export const addCate = (item) => {

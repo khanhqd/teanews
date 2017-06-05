@@ -360,6 +360,7 @@ const mapStateToProps = state => {
      dataSlot0: state.loadListDataReducer.selectedPost0,
      dataSlot1: state.loadListDataReducer.selectedPost1,
      dataSlot2: state.loadListDataReducer.selectedPost2,
+     openMenu: state.readerModalReducer.modalState
    }
 }
 export default connect(mapStateToProps)(NewsDetail);
