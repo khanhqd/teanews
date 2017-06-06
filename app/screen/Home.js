@@ -300,7 +300,7 @@ class Home extends Component {
                   let vitribatdauDes = CDATA.search('</br>')
                   let vitriketthucDes = CDATA.search(']]>')
                   let url = $(this).find('link').text()
-                  if(url.includes('http://vnexpress.net/projects')== false){
+                  if((url.includes('http://vnexpress.net/projects')== false)&&(CDATA.includes('No Description')==false)){
                       data.push({
                           title:$(this).find('title').text(),
                           thumb : CDATA.slice(vitribatdau +5 , vitriketthuc-1).replace("_180x108",""),

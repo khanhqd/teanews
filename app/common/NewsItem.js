@@ -8,10 +8,11 @@ import {
   Linking,
   Clipboard,
   ScrollView,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 var { height, width } = Dimensions.get('window');
-
+import _ from 'lodash';
 import { RunsItem, Button1 } from '../common';
 const cheerio = require('cheerio-without-node-native');
 import * as Animatable from 'react-native-animatable';
@@ -20,6 +21,7 @@ var Toast = require('react-native-toast');
 import { connect } from 'react-redux';
 import { changeFontSize, changeModalState } from '../actions';
 var WEBVIEW_REF = 'webview';
+let count = 0;
 
 class NewsItem extends Component {
   state = {
@@ -29,7 +31,8 @@ class NewsItem extends Component {
     baseHTML: '',
     isSaved: false,
     textSelected: '',
-    loading: false
+    loading: false,
+    videoUrl: ''
   };
   componentWillMount() {
     this.fetchContent(this.props.row)
@@ -58,7 +61,6 @@ class NewsItem extends Component {
 
           })
         })
-        console.log(other)
       })
   }
   updateWebview(row) {
@@ -66,11 +68,11 @@ class NewsItem extends Component {
       html:
       `<div>
           <img class="cover" src=${row.thumb}/>
-          <h1 class="title">${row.title}</h1>
           ${this.state.baseHTML + this.returnHtml()}
           </div>
         `}, () => { this.setState({ loading: false }) })
   }
+  // <h1 class="title">${row.title}</h1>
   _share() {
     Share.share({
       message: this.props.row.title,
@@ -135,17 +137,31 @@ class NewsItem extends Component {
         margin-right: 10px;
         font-size: ${this.props.fontSize}
       }
+      .minutes {
+        width: 0!important
+      }
+      ul {
+        padding: 0;
+      }
+      #container_tab_live ul li {
+        list-style: none;
+        width: 100%!important;
+        margin-left: 0!important;
+      }
+      #container_tab_live div.text_live {
+        float: right!important;
+        width: 100%;
+        display: block;
+      }
       li{
         list-style-type:none;
       }
-      noscript , script ,a, iframe,#wrapper_footer ,#box_tinkhac_detail,.box_tintaitro,
-       .main_show_comment.width_common,.title_show.txt_666,#box_xemnhieunhat,#col_300,
-       .block_tag.width_common.space_bottom_20,.text_xemthem ,#box_col_left,.form-control.change_gmt,
-       .tt_2,.back_tt ,#topbar,.box_tinkhac.width_common,#sticky_info_st,.col_fillter.box_sticky_left,
-       #menu-box,#header_web,.start.have_cap2,.cap2,.relative_new,.list_news_dot_3x3,.minutes,
-       .xemthem_new_ver.width_common,meta,link,.menu_main,.top_3,.number_bgs,.filter_right,
-       #live-updates-wrapper,.block_share.right,.block_goithutoasoan{
+      script,a,#wrapper_footer,#box_tinkhac_detail,.box_tintaitro,
+       .main_show_comment.width_common,.title_show.txt_666,#box_xemnhieunhat,#col_300{
         display: none
+      }
+      h1{
+        margin-left: 10px;
       }
       html, body{
         width: ${width}px;
@@ -154,10 +170,13 @@ class NewsItem extends Component {
         margin-left: 0px;
         margin-right: 5px;
         margin-top: 0px;
+        padding-top: 0px;
         background-color: ${this.props.postBackground}
       }
     </style>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script>
+      $(".block_tag.width_common.space_bottom_20,.text_xemthem,#box_col_left,.form-control.change_gmt,.tt_2,.back_tt,#topbar,.box_tinkhac.width_common,#sticky_info_st,.col_fillter.box_sticky_left,#menu-box,#header_web,.start.have_cap2,.cap2,.relative_new,.list_news_dot_3x3,.minutes,.div-fbook.width_common.title_div_fbook,#live-updates-wrapper,.block_share.right,.block_goithutoasoan,.xemthem_new_ver.width_common,meta,link,.menu_main,.top_3,.number_bgs,.filter_right").remove();
       var link = document.querySelectorAll("a");
       for(var i = 0; i < link.length; i++){
         link[i].setAttribute("href", "javascript:void(0)");
@@ -209,10 +228,44 @@ class NewsItem extends Component {
       )
     }
   }
-
+  // {(true)&&
+  // <WebView
+  // style={{ width: width, height: 200 }}
+  // source={{ url: this.state.videoUrl }}/>
+  // }
   render() {
     return (
       <View style={{ alignItems: 'center', flex: 1 }}>
+        <WebView
+        style={{ height: 0, width: 0 }}
+        injectedJavaScript='
+        var x = $(".parser_player_vnexpress").attr("src");
+        window.postMessageNative(x)
+        '
+        onMessage={(event) => {
+          if((count < 1)&&(event.nativeEvent.data != '')){
+            count++;
+            this.setState({videoUrl: event.nativeEvent.data},()=>{
+                Alert.alert(
+                  'Thông báo',
+                  'Bài báo có chứa video, để xem video, vui lòng chọn mở ở chế độ trình duyệt',
+                  [
+                  {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+                  {text: 'Mở video', onPress: () => {
+                      Linking.canOpenURL(this.state.videoUrl).then(supported => {
+                        if (supported) {
+                          Linking.openURL(this.state.videoUrl);
+                        } else {
+                          console.log('Don\'t know how to open URI: ' + this.state.videoUrl);
+                        }
+                      });
+                    }},
+                  ]
+                )
+            })
+          }
+        }}
+        source={{ url: this.props.row.url }} />
         {this.loading()}
         {this.props.openMenu &&
           <Animatable.View animation="slideInDown" duration={300} style={styles.menuModal}>

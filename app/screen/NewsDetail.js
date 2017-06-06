@@ -84,7 +84,6 @@ class NewsDetail extends Component {
           this.setState({ dx: gestureState.dx})
       },
       onPanResponderRelease: (event, gestureState) => {
-        console.log(gestureState.vx)
         switch (this.state.index0) {
           case 2:
               if(this.state.dx > 0) {
