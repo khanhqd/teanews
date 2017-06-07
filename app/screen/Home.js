@@ -127,21 +127,27 @@ class Home extends Component {
                   this.state.top2.setValue(-height+gestureState.dy)
                 }
               } else {
-                this.state.top0.setValue(gestureState.dy)
+                if (this.state.dataSlot0 + 1 < this.state.bigData.length) {
+                  this.state.top0.setValue(gestureState.dy)
+                }
               }
               break;
           case 3:
               if (gestureState.dy > 0) {
                 this.state.top0.setValue(-height+gestureState.dy)
               } else {
-                this.state.top1.setValue(gestureState.dy)
+                if (this.state.dataSlot0 + 6 < this.state.bigData.length) {
+                  this.state.top1.setValue(gestureState.dy)
+                }
               }
               break;
           case 1:
               if (gestureState.dy > 0) {
                 this.state.top1.setValue(-height+gestureState.dy)
               } else {
-                this.state.top2.setValue(gestureState.dy)
+                if (this.state.dataSlot0 < this.state.bigData.length) {
+                  this.state.top2.setValue(gestureState.dy)
+                }
               }
               break;
         }
@@ -173,14 +179,16 @@ class Home extends Component {
                 }
               } else {
                 if ((this.state.dy < -height/3)||(gestureState.vy< -1.5)) {
-                  this.setState({index2: 1,index1: 2,index0: 3},() => {
-                    this.setState({dataSlot2: this.state.dataSlot2 + 7})
-                  })
-                  Animated.timing(
-                    this.state.top0,
-                    {toValue: -height, duration: 300}
-                  ).start();
-                  this.state.top2.setValue(0)
+                  if (this.state.dataSlot0 +1 < this.state.bigData.length) {
+                    this.setState({index2: 1,index1: 2,index0: 3},() => {
+                      this.setState({dataSlot2: this.state.dataSlot2 + 7})
+                    })
+                    Animated.timing(
+                      this.state.top0,
+                      {toValue: -height, duration: 300}
+                    ).start();
+                    this.state.top2.setValue(0)
+                  }
                 } else {
                   Animated.timing(
                     this.state.top0,
@@ -210,14 +218,16 @@ class Home extends Component {
                 }
               } else {
                 if ((this.state.dy < -height/3)||(gestureState.vy< -1.5)) {
-                  this.setState({index0: 1,index2: 2,index1: 3},() => {
-                    this.setState({dataSlot0: this.state.dataSlot0 + 7})
-                  })
-                  Animated.timing(
-                    this.state.top1,
-                    {toValue: -height, duration: 300}
-                  ).start();
-                  this.state.top0.setValue(0)
+                  if (this.state.dataSlot0 + 6 < this.state.bigData.length) {
+                    this.setState({index0: 1,index2: 2,index1: 3},() => {
+                      this.setState({dataSlot0: this.state.dataSlot0 + 7})
+                    })
+                    Animated.timing(
+                      this.state.top1,
+                      {toValue: -height, duration: 300}
+                    ).start();
+                    this.state.top0.setValue(0)
+                  }
                 } else {
                   Animated.timing(
                     this.state.top1,
@@ -247,14 +257,16 @@ class Home extends Component {
                 }
               } else {
                 if ((this.state.dy < -height/3)||(gestureState.vy< -1.5)) {
-                  this.setState({index1: 1,index0: 2,index2: 3},() => {
-                    this.setState({dataSlot1: this.state.dataSlot1 + 7})
-                  })
-                  Animated.timing(
-                    this.state.top2,
-                    {toValue: -height, duration: 300}
-                  ).start();
-                  this.state.top1.setValue(0)
+                  if (this.state.dataSlot0< this.state.bigData.length) {
+                    this.setState({index1: 1,index0: 2,index2: 3},() => {
+                      this.setState({dataSlot1: this.state.dataSlot1 + 7})
+                    })
+                    Animated.timing(
+                      this.state.top2,
+                      {toValue: -height, duration: 300}
+                    ).start();
+                    this.state.top1.setValue(0)
+                  }
                 } else {
                   Animated.timing(
                     this.state.top2,
